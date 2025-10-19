@@ -1,0 +1,128 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }} Techniques</h1>
+
+<p>{{ page.description }}</p>
+
+<hr>
+
+<!-- Filter Section -->
+<div style="margin-bottom: 1.5rem;">
+  <input 
+    type="text" 
+    id="techniqueFilter" 
+    placeholder="Filter techniques by name, tactic, or tag..." 
+    style="width: 100%; max-width: 500px; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
+  >
+</div>
+
+<table id="techniquesTable">
+  <thead>
+    <tr>
+      <th>Technique</th>
+      <th>Tactics</th>
+      <th>MITRE ATT&CK</th>
+      <th>Tags</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if site.techniques %}
+      {% assign platform_techniques = site.techniques | where_exp: "item", "item.platforms contains page.platform_id" | sort: "title" %}
+    {% else %}
+      {% assign platform_techniques = "" | split: "" %}
+    {% endif %}
+    {% if platform_techniques.size == 0 %}
+      <tr class="no-results">
+        <td colspan="4" style="text-align: center; padding: 2rem;">
+          No techniques documented yet for this platform.
+        </td>
+      </tr>
+    {% else %}
+      {% for technique in platform_techniques %}
+        <tr class="technique-row">
+          <td>
+            <a href="{{ technique.url | relative_url }}">{{ technique.title }}</a>
+          </td>
+          <td>
+            {% if technique.tactics %}
+              {{ technique.tactics | join: ", " }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if technique.mitre_id %}
+              <a href="https://attack.mitre.org/techniques/{{ technique.mitre_id | replace: '.', '/' }}/" target="_blank" rel="noopener">
+                {{ technique.mitre_id }}
+              </a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if technique.tags %}
+              {{ technique.tags | join: ", " }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+
+<p id="noResultsMessage" style="display: none; text-align: center; padding: 2rem; color: #666;">
+  No techniques match your filter.
+</p>
+
+{% raw %}
+<script>
+(function() {
+  'use strict';
+  
+  function initializeFilter() {
+    var input = document.getElementById('techniqueFilter');
+    var table = document.getElementById('techniquesTable');
+    var noResultsMsg = document.getElementById('noResultsMessage');
+    
+    if (!input || !table) {
+      return;
+    }
+    
+    input.addEventListener('keyup', function() {
+      var filter = this.value.toLowerCase();
+      var rows = table.getElementsByClassName('technique-row');
+      var visibleCount = 0;
+      
+      for (var i = 0; i < rows.length; i++) {
+        var text = rows[i].textContent.toLowerCase();
+        
+        if (filter === '' || text.indexOf(filter) > -1) {
+          rows[i].style.display = '';
+          visibleCount++;
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+      
+      if (visibleCount === 0 && filter !== '') {
+        if (noResultsMsg) noResultsMsg.style.display = 'block';
+        if (table) table.style.display = 'none';
+      } else {
+        if (noResultsMsg) noResultsMsg.style.display = 'none';
+        if (table) table.style.display = 'table';
+      }
+    });
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeFilter);
+  } else {
+    initializeFilter();
+  }
+})();
+</script>
+{% endraw %}

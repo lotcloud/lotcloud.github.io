@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+<div class="technique-metadata">
+  {% if page.mitre_id %}
+  <p>
+    <strong>MITRE ATT&CK:</strong> 
+    <a href="https://attack.mitre.org/techniques/{{ page.mitre_id | replace: '.', '/' }}/" target="_blank" rel="noopener">
+      {{ page.mitre_id }}
+    </a>
+  </p>
+  {% endif %}
+  
+  {% if page.tactics %}
+  <p>
+    <strong>Tactics:</strong>
+    {{ page.tactics | join: ", " }}
+  </p>
+  {% endif %}
+  
+  {% if page.platforms %}
+  <p>
+    <strong>Platforms:</strong>
+    {{ page.platforms | join: ", " }}
+  </p>
+  {% endif %}
+  
+  {% if page.tags %}
+  <p>
+    <strong>Tags:</strong>
+    {{ page.tags | join: ", " }}
+  </p>
+  {% endif %}
+</div>
+
+<hr>
+
+{{ content }}

@@ -1,8 +1,39 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: Living Off The Cloud
+description: A repository for native cloud techniques used by Threat Actors
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
+url: https://github.com/lotcloud/living-off-the-cloud
 
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  GitHub: https://github.com/lotcloud/living-off-the-cloud
+
+just_the_docs:
+  collections:
+    techniques:
+      name: Techniques
+      nav_exclude: false
+      search_exclude: false
+
+collections:
+  techniques:
+    output: true
+    permalink: /:collection/:path/
+
+just_the_docs:
+  collections:
+    techniques:
+      nav_exclude: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "techniques"
+    values:
+      layout: "technique"
+      search_exclude: false
+      nav_exclude: true
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
